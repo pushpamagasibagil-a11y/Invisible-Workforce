@@ -1,0 +1,94 @@
+<!DOCTYPE html><html>
+<head>
+    <title>Employer Verification</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+
+<body><header>
+    <h1>Employer Dashboard</h1>
+    <p>Verify Worker Skills and Find Suitable Employees</p>
+</header>
+
+<main>
+
+    <h2>Worker Verification</h2>
+
+    <p>Scan the worker's QR code to view their Skill Passport.</p>
+
+   <h3>Scan Worker QR Code</h3>
+
+<div id="reader" style="width:300px;"></div>
+
+<div id="verificationResult">
+    Waiting for QR scan...
+</div>
+
+<button onclick="startScanner()">Start QR Scanner</button>
+
+</main>
+
+</body>
+<script>
+
+function startScanner() {
+
+    const scanner = new Html5Qrcode("reader");
+
+    scanner.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+
+        function(decodedText) {
+
+            scanner.stop();
+
+            let worker = JSON.parse(decodedText);
+
+            document.getElementById("verificationResult").innerHTML = `
+    <div style="
+        background: white;
+        padding: 25px;
+        margin: 20px auto;
+        max-width: 400px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px #ccc;
+        text-align: left;
+    ">
+        <h2 style="color: green; text-align: center;">
+            Worker Skill Passport
+        </h2>
+
+        <hr>
+
+        <p><b>Worker ID:</b> ${worker.workerID}</p>
+        <p><b>Worker Name:</b> ${worker.name}</p>
+        <p><b>Age:</b> ${worker.age}</p>
+
+<p><b>Gender:</b> ${worker.gender}</p>
+
+<p><b>Work Experience:</b> ${worker.experience} years</p>
+
+        <p><b>Skills:</b></p>
+        <p>${worker.skills.join(", ")}</p>
+
+        <p><b>Assessment:</b> ${worker.assessment}</p>
+
+        <h3 style="color: green; text-align: center;">
+            QR Scanned Successfully
+        </h3>
+    </div>
+`;
+
+        },
+
+        function(error) {}
+
+    ).catch(function(error) {
+        alert("Camera error: " + error);
+    });
+
+}
+
+</script>
+</html>
